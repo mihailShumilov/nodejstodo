@@ -10,6 +10,8 @@ var mongoose        = require( 'mongoose' );
 var morgan          = require( 'morgan' );
 var bodyParser      = require( 'body-parser' );
 var methodOverride  = require( 'method-override' );
+var uid = require('node-uuid');
+var session = require('express-session');
 
 
 // configs
@@ -22,11 +24,22 @@ app.use(bodyParser.urlencoded({'extended':'true'}));
 app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(methodOverride());
+app.use(session({
+    genid: function(req) {
+        return uid.v1()
+    },
+    secret: 'nodejstodo',
+    saveUninitialized: true,
+    cookie:{
+        expires: new Date(Date.now() + 3600000)
+    }
+}));
 
 
 // models
 
 var Todo = mongoose.model('Todo', {
+    userid: String,
     text : String
 });
 
@@ -36,7 +49,7 @@ var Todo = mongoose.model('Todo', {
 // get all todos
 app.get('/api/todos', function(req, res) {
 
-    Todo.find(function(err, todos) {
+    Todo.find({ userid: req.sessionID },function(err, todos) {
         if (err) {
             res.send( err )
         }
@@ -50,6 +63,7 @@ app.post('/api/todos', function(req, res) {
 
     Todo.create(
         {
+            userid: req.sessionID,
             text : req.body.text,
             done : false
         },
@@ -58,7 +72,7 @@ app.post('/api/todos', function(req, res) {
                 res.send( err );
             }
 
-            Todo.find(function(err, todos) {
+            Todo.find({ userid: req.sessionID },function(err, todos) {
                 if (err) {
                     res.send( err )
                 }
@@ -80,7 +94,7 @@ app.delete('/api/todos/:todo_id', function(req, res) {
                 res.send( err );
             }
 
-            Todo.find(function(err, todos) {
+            Todo.find({ userid: req.sessionID },function(err, todos) {
                 if (err) {
                     res.send( err )
                 }
