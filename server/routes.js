@@ -7,8 +7,8 @@ module.exports = function(app) {
 
     // get all todos
     app.get('/api/todos', function(req, res) {
-
-        Todo.find({ userid: req.sessionID },function(err, todos) {
+        console.log(req.params['userid']);
+        Todo.find({ userid: req.param('userid') },function(err, todos) {
             if (err) {
                 res.send( err )
             }
@@ -22,7 +22,7 @@ module.exports = function(app) {
 
         Todo.create(
             {
-                userid: req.sessionID,
+                userid: req.param('userid'),
                 text : req.body.text,
                 done : false
             },
@@ -31,7 +31,7 @@ module.exports = function(app) {
                     res.send( err );
                 }
 
-                Todo.find({ userid: req.sessionID },function(err, todos) {
+                Todo.find({ userid: req.param('userid')},function(err, todos) {
                     if (err) {
                         res.send( err )
                     }
@@ -52,13 +52,7 @@ module.exports = function(app) {
                 if (err) {
                     res.send( err );
                 }
-
-                Todo.find({ userid: req.sessionID },function(err, todos) {
-                    if (err) {
-                        res.send( err )
-                    }
-                    res.json(todos);
-                });
+                res.json({"status":"ok"});
             }
         );
     });

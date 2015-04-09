@@ -4,23 +4,37 @@
 var app = angular.module('todojs', []);
 
 app.controller('mainController', [ '$scope','$http', function( $scope, $http ) {
-    $scope.formData = {};
+    $scope.formData = {
+        text: "",
+        userid: ""
+    };
+    $scope.isLogged = false;
 
-    // when landing on the page, get all todos and show them
-    $http.get('/api/todos')
-        .success(function(data) {
-                     $scope.todos = data;
-                     console.log(data);
-                 })
-        .error(function(data) {
-                   console.log('Error: ' + data);
-               });
+    $scope.login = function(){
+        $scope.isLogged = true;
+        console.log($scope.formData);
+        getToDos();
+    };
 
+    function getToDos()
+    {
+        // when landing on the page, get all todos and show them
+        $http.get( '/api/todos?userid='+$scope.formData.userid )
+            .success( function ( data )
+                      {
+                          $scope.todos = data;
+                          console.log( data );
+                      } )
+            .error( function ( data )
+                    {
+                        console.log( 'Error: ' + data );
+                    } );
+    }
     // when submitting the add form, send the text to the node API
     $scope.createTodo = function() {
         $http.post('/api/todos', $scope.formData)
             .success(function(data) {
-                         $scope.formData = {}; // clear the form so our user is ready to enter another
+                         $scope.formData.text = ""; // clear the form so our user is ready to enter another
                          $scope.todos = data;
                          console.log(data);
                      })
@@ -33,8 +47,7 @@ app.controller('mainController', [ '$scope','$http', function( $scope, $http ) {
     $scope.deleteTodo = function(id) {
         $http.delete('/api/todos/' + id)
             .success(function(data) {
-                         $scope.todos = data;
-                         console.log(data);
+                            getToDos();
                      })
             .error(function(data) {
                        console.log('Error: ' + data);

@@ -28,14 +28,28 @@
 
 </head>
 
-<body ng-controller="mainController">
-<div class="container">
+<body ng-controller="mainController" >
+<div class="signin" ng-if="!isLogged">
+    <div id="signin-form" class="row">
+        <div class="col-sm-8 col-sm-offset-2 text-center">
+            <form>
+                <div class="form-group">
+
+                    <input type="text" class="form-control input-lg text-center"
+                           placeholder="Enter your name" ng-model="formData.userid">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" ng-click="login()">Signin</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container" ng-if="isLogged">
 
     <div class="jumbotron text-center">
         <h1>To-Do items <span class="label label-info">{{ todos.length }}</span></h1>
     </div>
 
-    <!-- TODO LIST -->
     <div id="todo-list" class="row">
         <div class="col-sm-4 col-sm-offset-4">
 
