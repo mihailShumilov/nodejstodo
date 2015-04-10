@@ -40,16 +40,7 @@ angular.module('todos').controller('TodosController', ['$scope', '$stateParams',
 			}
 		};
 
-		// Update existing Article
-		$scope.update = function() {
-			var todo = $scope.todo;
 
-			todo.$update(function() {
-				$location.path('todos/' + todo._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
 
 		// Find a list of Todos
 		$scope.find = function() {
