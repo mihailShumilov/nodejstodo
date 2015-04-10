@@ -9,21 +9,16 @@ var mongoose = require('mongoose'),
 /**
  * Article Schema
  */
-var ArticleSchema = new Schema({
+var TodoSchema = new Schema({
 	created: {
 		type: Date,
 		default: Date.now
 	},
-	title: {
+	task: {
 		type: String,
 		default: '',
 		trim: true,
-		required: 'Title cannot be blank'
-	},
-	content: {
-		type: String,
-		default: '',
-		trim: true
+		required: 'Task cannot be blank'
 	},
 	user: {
 		type: Schema.ObjectId,
@@ -31,4 +26,4 @@ var ArticleSchema = new Schema({
 	}
 });
 
-mongoose.model('Article', ArticleSchema);
+mongoose.model('Todo', TodoSchema);
